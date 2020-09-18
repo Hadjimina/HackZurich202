@@ -7,6 +7,7 @@ import sys
 sys.path.insert(1, 'functions/')
 
 from SWcheck import SWcheckMain
+from checkFaceTooBig import checkFaceTooBigMain
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
@@ -43,7 +44,12 @@ def upload_image():
 		else:
 			flash("Image is not black and white")
 
-		#
+		#Face too big
+		ret=checkFaceTooBigMain(path,"haarcascade.xml")
+		if ret != 0:
+			flash("This face is too big")
+		else:
+			flash("Face is good size")
 
 		return render_template('upload.html', filename=filename)
 	else:
