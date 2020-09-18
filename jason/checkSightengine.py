@@ -39,7 +39,6 @@ def check_sightengine_properties(path):
     output['contrast'] = 1 if output['contrast'] > 0.7 else 2 if output['contrast'] < 0.3 else 0
     output['brightness'] = 1 if output['brightness'] > 0.8 else 2 if output['brightness'] < 0.2 else 0
     del output['faces']
-    print(output)
+    
     return output
 
-check_sightengine_properties("example.jpg")
