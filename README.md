@@ -1,1 +1,1 @@
-# HackZurich20200
+# HackZurich2020
