@@ -12,10 +12,6 @@ def find_biggest_face(img):
             size = face_size
             biggest_face = face
     
-    cv2.rectangle(img, (biggest_face[0], biggest_face[1]), (biggest_face[0] + biggest_face[2], biggest_face[1] + biggest_face[3]), (0,255,0), 2)
-
-    cv2.imshow("Hello", img)
-    cv2.waitKey(0)
     return biggest_face
 
 
