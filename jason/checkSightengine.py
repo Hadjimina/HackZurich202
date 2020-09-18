@@ -23,12 +23,11 @@ def check_sightengine_properties(path):
     output['scam'] = output['scam']['prob']
     output['nudity'] = output['nudity']['raw']
     output['minor'] = output['faces'][0]['attributes']['minor']
-    output['sunglasses'] = output['faces'][-1]['attributes']['sunglasses']
+    output['sunglasses'] = output['faces'][0]['attributes']['sunglasses']
     del output['faces']
     del output['colors']
     output['offensive'] = output['offensive']['prob']
     del output['media']
     del output['text']
-    print(output)
 
-check_sightengine_properties("example.jpg")
+    return output
