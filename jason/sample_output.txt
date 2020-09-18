@@ -1,13 +1,13 @@
 {
-'weapon': 0.0085, 
-'alcohol': 0.004, 
-'drugs': 0.006, 
-'scam': 0.0334, 
-'nudity': 0.01, 
-'sharpness': 0.998, 
-'brightness': 0.291, 
-'contrast': 0.936, 
-'offensive': 0.01, 
-'minor': 0.01, 
-'sunglasses': 0.01
+'weapon': 0, 
+'alcohol': 0, 
+'drugs': 0, 
+'scam': 0, 
+'nudity': 0, 
+'sharpness': 1, 
+'brightness': 0, 
+'contrast': 1, 
+'offensive': 0, 
+'minor': 0, 
+'sunglasses': 0
 }
