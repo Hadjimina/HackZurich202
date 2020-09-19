@@ -10,13 +10,12 @@ sys.path.insert(1, 'functions/')
 from SWcheck import SWcheckMain
 from checkFaceTooBig import checkFaceTooBigMain
 from checkSightengine import check_sightengine_properties
+from checkBackground import checkBackgroundEdges
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 USE_SIGHTENGINE = False
 SHOW_POSITIVE_MESSAGES = False
 SKIP_OTHER = True
-
-
 
 def checkResolution(path):
 	im = Image.open(path)
@@ -159,19 +158,30 @@ def upload_image():
 		else:
 			messages.append(tuple(("SIGHTENGINE OFF","error")))
 
-		if error_count == 0:
-			if warning_count > 0:
-				messages.append(tuple(("Nice! Your picture looks pretty good. Check below for some editing suggestions","information")))
-			else:
-				messages.append(tuple(("Awesome! Your picture looks perfect.","information")))
 
 		#Check resolution
 		checkResolution(path)
 
 
+		edgesReturn = checkBackgroundEdges(path)
+		if edgesReturn == 0:
+			if SHOW_POSITIVE_MESSAGES:
+				messages.append(tuple(("Background not too wild","information")))
+
+		else:
+			messages.append(tuple(("The image background feels nervous. Maybe try a more even one.","warning")))
+			warning_count += 1
+
+
+
+		if error_count == 0:
+			if warning_count > 0:
+				messages.append(tuple(("Nice! Your picture looks pretty good. Check below for some editing suggestions.","information")))
+			else:
+				messages.append(tuple(("Awesome! Your picture looks perfect.","information")))
 
 		messages.reverse()
-		
+
 		for msg in messages:
 		 	flash(msg[0],msg[1])
 
