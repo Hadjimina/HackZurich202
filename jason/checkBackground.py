@@ -63,7 +63,9 @@ def segment(net, path, show_orig=True, dev='cpu'):
   #plt.imshow(fg); plt.axis('off'); plt.show()
   return(fg, bg)
 
-def checkBackgroundEdges(img):
+def checkBackgroundEdges(path):
+  dlab = models.segmentation.deeplabv3_resnet101(pretrained=1).eval()
+  img = segment(dlab, os.path.abspath(path))[1]
   edges = cv2.Canny(img,100,200)
   #plt.imshow(edges); plt.axis('off'); plt.show()
   #plt.hist(edges.ravel(), bins=256, range=(0, 255), fc='k', ec='k'); plt.show() #calculating histogram
@@ -74,5 +76,6 @@ def checkBackgroundEdges(img):
   #print(edge_coef)
   return 1 if(edge_coef > 0.1) else 0
 
+checkBackgroundEdges("pictures\\bad\\b4.png")
 #dlab = models.segmentation.deeplabv3_resnet101(pretrained=1).eval()
 #print(checkBackgroundEdges(segment(dlab, os.path.abspath("pictures\\bad\\b1.png"))[1]))    
