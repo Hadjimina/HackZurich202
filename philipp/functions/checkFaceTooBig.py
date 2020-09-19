@@ -5,7 +5,7 @@ import numpy as np
 
 def find_biggest_face(img, casc_path):
     face_cascade = cv2.CascadeClassifier(casc_path)
-    faces = face_cascade.detectMultiScale(img, 1.1, 4)
+    faces = face_cascade.detectMultiScale(img, 1.1, 8)
     size = 0
     biggest_face = None
     for face in faces:
@@ -49,7 +49,8 @@ def checkFaceTooBigMain(img_path, casc_path):
     #check_emotion(sub_image)
 
     face_too_big = False
-    if face[2] * face[3] / img.shape[0]*img.shape[1] > 0.25:
+
+    if (face[2] * face[3]) / (img.shape[0]*img.shape[1]) > 0.25:
         face_too_big = True
     return (result[0], face_too_big)
 

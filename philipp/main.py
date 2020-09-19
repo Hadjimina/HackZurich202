@@ -4,6 +4,7 @@ import urllib.request
 from flask import Flask, flash, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 import sys
+from PIL import Image
 sys.path.insert(1, 'functions/')
 
 from SWcheck import SWcheckMain
@@ -11,6 +12,13 @@ from checkFaceTooBig import checkFaceTooBigMain
 from checkSightengine import check_sightengine_properties
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+USE_SIGHTENGINE = False
+
+def checkResolution(path):
+	im = Image.open(path)
+	width, height = im.size
+	if width < 300 or height < 300:
+		flash("Image Resolution too small")
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -53,14 +61,21 @@ def upload_image():
 		flash("This image contains "+str(ret[0])+" people")
 
 		#Sightengine
-		ret=check_sightengine_properties(path)
-		for key in ret:
-			# if ret[key]==0:
-			# 	flash("Image "+key+"good")
-			if ret[key] == 1:
-				flash("Image "+key+" too high")
-			elif ret[key] == 2:
-				flash("Image "+key+" too low")
+		if USE_SIGHTENGINE:
+			ret=check_sightengine_properties(path)
+			for key in ret:
+				# if ret[key]==0:
+				# 	flash("Image "+key+"good")
+				if ret[key] == 1:
+					flash("Image "+key+" too high")
+				elif ret[key] == 2:
+					flash("Image "+key+" too low")
+		else:
+			flash("SIGHTENGINE OFF")
+
+
+		#Check resolution
+		checkResolution(path)
 
 		return render_template('upload.html', filename=filename)
 	else:
