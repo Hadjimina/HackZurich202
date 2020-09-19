@@ -8,11 +8,9 @@ sys.path.insert(1, 'functions/')
 
 from SWcheck import SWcheckMain
 from checkFaceTooBig import checkFaceTooBigMain
+from checkSightengine import check_sightengine_properties
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
-
-def testing():
-	flash("testing out")
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -46,10 +44,23 @@ def upload_image():
 
 		#Face too big
 		ret=checkFaceTooBigMain(path,"haarcascade.xml")
-		if ret != 0:
+		print(ret)
+		if ret[1]:
 			flash("This face is too big")
 		else:
 			flash("Face is good size")
+
+		flash("This image contains "+str(ret[0])+" people")
+
+		#Sightengine
+		ret=check_sightengine_properties(path)
+		for key in ret:
+			# if ret[key]==0:
+			# 	flash("Image "+key+"good")
+			if ret[key] == 1:
+				flash("Image "+key+" too high")
+			elif ret[key] == 2:
+				flash("Image "+key+" too low")
 
 		return render_template('upload.html', filename=filename)
 	else:
@@ -62,7 +73,7 @@ def upload_image():
 @app.route('/display/<filename>')
 def display_image(filename):
 	#print('display_image filename: ' + filename)
-	testing();
+
 	return redirect(url_for('static', filename='uploads/' + filename), code=301)
 
 if __name__ == "__main__":

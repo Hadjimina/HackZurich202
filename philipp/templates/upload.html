@@ -60,14 +60,14 @@
 
 			{% with messages = get_flashed_messages() %}
 				{% if messages %}
-				<ul class=flashes>
+				<p class=flashes>
 				{% for message in messages %}
 					<li>{{ message }}</li>
 				{% endfor %}
-				</ul>
+      </p>
 				{% endif %}
 			{% endwith %}
-			
+
 			<form method="post" action="/" enctype="multipart/form-data">
 				<div style="display: inline-block">
 					<dl>
