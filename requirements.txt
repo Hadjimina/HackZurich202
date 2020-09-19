@@ -12,3 +12,4 @@ tensorflow==1.4.0
 torch
 torchvision
 opencv-python
+scikit-image
