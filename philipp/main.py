@@ -158,11 +158,6 @@ def upload_image():
 		else:
 			messages.append(tuple(("SIGHTENGINE OFF","error")))
 
-		if error_count == 0:
-			if warning_count > 0:
-				messages.append(tuple(("Nice! Your picture looks pretty good. Check below for some editing suggestions","information")))
-			else:
-				messages.append(tuple(("Awesome! Your picture looks perfect.","information")))
 
 		#Check resolution
 		checkResolution(path)
@@ -172,9 +167,18 @@ def upload_image():
 		if edgesReturn == 0:
 			if SHOW_POSITIVE_MESSAGES:
 				messages.append(tuple(("Background not too wild","information")))
-		else:
-			messages.append(tuple(("The image background feels nervous. Maybe try a more even one","warning")))
 
+		else:
+			messages.append(tuple(("The image background feels nervous. Maybe try a more even one.","warning")))
+			warning_count += 1
+
+
+
+		if error_count == 0:
+			if warning_count > 0:
+				messages.append(tuple(("Nice! Your picture looks pretty good. Check below for some editing suggestions.","information")))
+			else:
+				messages.append(tuple(("Awesome! Your picture looks perfect.","information")))
 
 		messages.reverse()
 
