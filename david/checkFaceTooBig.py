@@ -46,7 +46,7 @@ def checkFaceTooBigMain(img_path, casc_path):
     img_size = img.shape
     face_too_big = False
     sub_image = img[face[1]:face[1]+face[3], face[0]:face[0]+face[2]]
-    check_emotion(sub_image)
+    #check_emotion(sub_image)
     if face[2] / img_size[0] > 0.3 or face[3] / img_size[1] > 0.3:
         face_too_big = True
     return (result[0], face_too_big)
