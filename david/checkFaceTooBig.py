@@ -42,18 +42,20 @@ def checkFaceTooBigMain(img_path, casc_path):
         print("Face-too-big-checker could not read image file..")
         return
     result = find_biggest_face(img, casc_path)
+    if result[0] == 0:
+        return (0,None)
     face = result[1]
-    img_size = img.shape
-    face_too_big = False
     sub_image = img[face[1]:face[1]+face[3], face[0]:face[0]+face[2]]
     #check_emotion(sub_image)
-    if face[2] / img_size[0] > 0.3 or face[3] / img_size[1] > 0.3:
+
+    face_too_big = False
+    if face[2] * face[3] / img.shape[0]*img.shape[1] > 0.25:
         face_too_big = True
     return (result[0], face_too_big)
 
 
 def main():
-    checkFaceTooBigMain(sys.argv[1], sys.argv[2])
+    print(checkFaceTooBigMain(sys.argv[1], sys.argv[2]))
 
 if __name__ == "__main__":
     main()
