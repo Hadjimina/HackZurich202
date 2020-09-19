@@ -9,7 +9,6 @@ import cv2
 
 # Define the helper function
 def decode_segmap(image, nc=21):
-  
   label_colors = np.array([(150, 150, 150),  # 0=background
                # 1=aeroplane, 2=bicycle, 3=bird, 4=boat, 5=bottle
                (128, 0, 0), (0, 128, 0), (128, 128, 0), (0, 0, 128), (128, 0, 128),
@@ -58,13 +57,25 @@ def segment(net, path, show_orig=True, dev='cpu'):
 
   ## cv2.bitwise_and to extract the region
   img = cv2.imread(path)
-  plt.imshow(img);plt.show()
-  plt.imshow(bg_mask);plt.show()
-  plt.imshow(fg_mask);plt.show()
-  fg = cv2.bitwise_and(img, fg_mask)
-  bg = cv2.bitwise_and(img, bg_mask)
+  bg = cv2.bitwise_and(img, fg_mask)
+  fg = cv2.bitwise_and(img, bg_mask)
 
-  plt.imshow(fg); plt.axis('off'); plt.show()
+  #plt.imshow(fg); plt.axis('off'); plt.show()
+  return(fg, bg)
 
-dlab = models.segmentation.deeplabv3_resnet101(pretrained=1).eval()
-segment(dlab, os.path.abspath("pictures\\good\\t1.png"))
+def checkBackgroundEdges(path):
+  dlab = models.segmentation.deeplabv3_resnet101(pretrained=1).eval()
+  img = segment(dlab, os.path.abspath(path))[1]
+  edges = cv2.Canny(img,100,200)
+  #plt.imshow(edges); plt.axis('off'); plt.show()
+  #plt.hist(edges.ravel(), bins=256, range=(0, 255), fc='k', ec='k'); plt.show() #calculating histogram
+
+  nr_white_pixels = np.sum(edges == 255)
+  nr_black_pixels = np.sum(edges == 0)
+  edge_coef = nr_white_pixels / nr_black_pixels
+  #print(edge_coef)
+  return 1 if(edge_coef > 0.1) else 0
+
+#checkBackgroundEdges("pictures\\bad\\b4.png")
+#dlab = models.segmentation.deeplabv3_resnet101(pretrained=1).eval()
+#print(checkBackgroundEdges(segment(dlab, os.path.abspath("pictures\\bad\\b1.png"))[1]))    
