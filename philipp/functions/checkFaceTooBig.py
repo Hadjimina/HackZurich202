@@ -2,6 +2,7 @@ import cv2
 import sys
 from keras.models import load_model
 import numpy as np
+from imageai.Detection import ObjectDetection
 
 def find_biggest_face(img, casc_path):
     face_cascade = cv2.CascadeClassifier(casc_path)
@@ -13,7 +14,7 @@ def find_biggest_face(img, casc_path):
         if  face_size > size:
             size = face_size
             biggest_face = face
-    
+
     return (len(faces), biggest_face)
 
 def check_emotion(img):
@@ -28,31 +29,41 @@ def check_emotion(img):
     model = load_model("model_v6_23.hdf5")
     print(model.predict(img))
     predicted_class = np.argmax(model.predict(img))
-    label_map = dict((v,k) for k,v in emotion_dict.items()) 
+    label_map = dict((v,k) for k,v in emotion_dict.items())
     predicted_label = label_map[predicted_class]
     print(predicted_label)
 
+def check_people(img_path):
+    detector = ObjectDetection()
+    detector.setModelTypeAsYOLOv3()
+    detector.setModelPath('yolo.h5')
+    detector.loadModel()
+    peopleOnly = detector.CustomObjects(person=True)
+    detectedImage, detections = detector.detectCustomObjectsFromImage(custom_objects=peopleOnly, output_type="array", input_image=img_path, minimum_percentage_probability=30)
+    return len(detections)
 
 
 def checkFaceTooBigMain(img_path, casc_path):
-    # Returns a tuple (Number of faces -> Integer, Is face too big -> Boolean)
+    # Returns a tuple (Number of people -> Integer, Is face too big -> Boolean)
     try:
         img = cv2.imread(img_path)
     except:
         print("Face-too-big-checker could not read image file..")
         return
-    result = find_biggest_face(img, casc_path)
-    if result[0] == 0:
-        return (0,None)
-    face = result[1]
+    num_people = check_people(img_path)
+    if num_people == 0:
+        return (num_people, False)
+    faces_result = find_biggest_face(img, casc_path)
+    if faces_result[0] == 0:
+        return (num_people, False)
+    face = faces_result[1]
     sub_image = img[face[1]:face[1]+face[3], face[0]:face[0]+face[2]]
     #check_emotion(sub_image)
 
     face_too_big = False
-
     if (face[2] * face[3]) / (img.shape[0]*img.shape[1]) > 0.25:
         face_too_big = True
-    return (result[0], face_too_big)
+    return (num_people, face_too_big)
 
 
 def main():
