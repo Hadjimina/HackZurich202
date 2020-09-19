@@ -13,6 +13,8 @@ import skimage.segmentation as seg
 import skimage.color as color
 import skimage.exposure as exposure
 
+FOREGROUND_IMAGE = None
+
 # Define the helper function
 def decode_segmap(image, nc=21):
   
@@ -23,7 +25,7 @@ def decode_segmap(image, nc=21):
                (0, 128, 128), (128, 128, 128), (64, 0, 0), (192, 0, 0), (64, 128, 0),
                # 11=dining table, 12=dog, 13=horse, 14=motorbike, 15=person
                (192, 128, 0), (64, 0, 128), (192, 0, 128), (64, 128, 128), (0, 0, 0), #(192, 128, 128),
-               # 16=potted plant, 17=sheep, 18=sofa, 19=train, 20=tv/monitor
+                # 16=potted plant, 17=sheep, 18=sofa, 19=train, 20=tv/monitor
                (0, 64, 0), (128, 64, 0), (0, 192, 0), (128, 192, 0), (0, 64, 128)])
 
     r = np.zeros_like(image).astype(np.uint8)
@@ -70,12 +72,18 @@ def segment(net, path, show_orig=True, dev='cpu'):
     fg = cv2.bitwise_and(img, fg_mask)
     # bg = cv2.bitwise_and(img, bg_mask)
     # plt.imshow(fg); plt.axis('off'); 
-    return fg
+    # return fg
+    global FOREGROUND_IMAGE
+    FOREGROUND_IMAGE = fg
 
 
 def evalutateColorDisribution(imagePath):
-    dlab = models.segmentation.deeplabv3_resnet101(pretrained=1).eval()
-    maskImage = segment(dlab, os.path.abspath(imagePath))
+    # dlab = models.segmentation.deeplabv3_resnet101(pretrained=1).eval()
+    # maskImage = segment(dlab, os.path.abspath(imagePath))
+    # segment(dlab, os.path.abspath(imagePath))
+
+    global FOREGROUND_IMAGE
+    maskImage = FOREGROUND_IMAGE
     image_slic = seg.slic(maskImage,n_segments=200) #k-means clustering
     kMImage = color.label2rgb(image_slic, maskImage, kind='avg')
     colorDistributionDict = {}
@@ -89,16 +97,31 @@ def evalutateColorDisribution(imagePath):
                 colorDistributionDict[hexKey] += 1
             else:
                 colorDistributionDict[hexKey] = 1
-    print(len(list(colorDistributionDict.keys())))
+    # print(len(list(colorDistributionDict.keys())))
     if len(list(colorDistributionDict.keys())) > 60:
         return 1
     return 0
 
 
+def checkBackgroundEdges(path):
+    dlab = models.segmentation.deeplabv3_resnet101(pretrained=1).eval()
+    segment(dlab, os.path.abspath(path))
+    global FOREGROUND_IMAGE
+    img = FOREGROUND_IMAGE
+    edges = cv2.Canny(img,100,200)
+    #plt.imshow(edges); plt.axis('off'); plt.show()
+    #plt.hist(edges.ravel(), bins=256, range=(0, 255), fc='k', ec='k'); plt.show() #calculating histogram
+
+    nr_white_pixels = np.sum(edges == 255)
+    nr_black_pixels = np.sum(edges == 0)
+    edge_coef = nr_white_pixels / nr_black_pixels
+    #print(edge_coef)
+    return 1 if(edge_coef > 0.1) else 0
+
 if __name__ == "__main__":
     start  = timer()
-    # evalutateColorDisribution("pictures\\good\\t1.png")s
-    evalutateColorDisribution("pictures\\bad\\b9.jpg")
+    print("jason",checkBackgroundEdges("pictures\\bad\\b9.jpg"))
+    print("mike",evalutateColorDisribution("pictures\\bad\\b9.jpg"))
     end = timer()
     print("Time in seconds: {}".format(end - start)) 
     plt.show()
