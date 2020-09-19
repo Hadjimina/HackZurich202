@@ -76,6 +76,6 @@ def checkBackgroundEdges(path):
   #print(edge_coef)
   return 1 if(edge_coef > 0.1) else 0
 
-checkBackgroundEdges("pictures\\bad\\b4.png")
+#checkBackgroundEdges("pictures\\bad\\b4.png")
 #dlab = models.segmentation.deeplabv3_resnet101(pretrained=1).eval()
 #print(checkBackgroundEdges(segment(dlab, os.path.abspath("pictures\\bad\\b1.png"))[1]))
