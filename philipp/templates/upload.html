@@ -5,7 +5,7 @@
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
 <!-- Always shows a header, even in smaller screens. -->
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header" style="background-color:#ebebeb">
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
       <!-- Title -->
@@ -19,10 +19,7 @@
   <div class="mdl-layout__drawer">
     <span class="mdl-layout-title">Title</span>
     <nav class="mdl-navigation">
-      <a class="mdl-navigation__link" href="">Link</a>
-      <a class="mdl-navigation__link" href="">Link</a>
-      <a class="mdl-navigation__link" href="">Link</a>
-      <a class="mdl-navigation__link" href="">Link</a>
+
     </nav>
   </div>
   <main class="mdl-layout__content">
@@ -33,53 +30,78 @@
 
 			</p>
 			{% if filename %}
-			<!-- Image card -->
-				<style>
-				.demo-card-image.mdl-card {
-				  width: 256px;
-				  height: 256px;
-				  background: url('../assets/demos/image_card.jpg') center / cover;
-				}
-				.demo-card-image > .mdl-card__actions {
-				  height: 52px;
-				  padding: 16px;
-				  background: rgba(0, 0, 0, 0.2);
-				}
-				.demo-card-image__filename {
-				  color: #fff;
-				  font-size: 14px;
-				  font-weight: 500;
-				}
-				</style>
-
 
 				<div>
 					<img src="{{ url_for('display_image', filename=filename) }}" style="max-height: 400px;box-shadow: 5px 5px  5px #888888;">
 				</div>
-			{% endif %}
 
-			{% with messages = get_flashed_messages() %}
-				{% if messages %}
-				<p class=flashes>
-				{% for message in messages %}
-					<li>{{ message }}</li>
-				{% endfor %}
-      </p>
-				{% endif %}
-			{% endwith %}
+      {% endif %}
 
-			<form method="post" action="/" enctype="multipart/form-data">
-				<div style="display: inline-block">
-					<dl>
-						<input type="file" name="file" autocomplete="off" required>
-					</dl>
-				</div>
-				<div style="display: inline-block">
-   				<input type="submit" value="Submit">
-				</div>
+        <div style=" margin: auto;width: 50%;">
+          <form method="post" action="/" enctype="multipart/form-data">
+    				<div style="display: inline-block">
+    					<dl>
+    						<input type="file" name="file" autocomplete="off" required>
+    					</dl>
+    				</div>
+    				<div style="display: inline-block">
+       				<input type="submit" value="Submit">
+    				</div>
+    			</form>
+      </div>
+
+      <div style="background-color:white;box-shadow: 5px 5px  5px #888888;max-width:600px; margin: auto;width: 50%;">
 
 
-			</form>
+  			{% with messages = get_flashed_messages(with_categories=true) %}
+  				{% if messages %}
+  				<p class=flashes>
+            <style>
+            .demo-list-icon {
+              width: 300px;
+            }
+            .alert-information{
+              color: green;
+
+            }
+            .alert-warning{
+              color: orange;
+
+            }
+            .alert-error{
+              color: red;
+            }
+            </style>
+
+            <ul class="demo-list-icon mdl-list">
+
+
+            </ul>
+  				{% for message in messages %}
+
+
+
+
+              <li class="mdl-list__item">
+                <span class="mdl-list__item-primary-content">
+                <i class="material-icons mdl-list__item-icon ">
+                  <div class="alert-{{message[0]}}">{{ message[0]}}</div>
+                </i>
+
+                <div class="alert-{{message[0]}}" style="text-align:left;">
+                  {{ message[1] }}
+                </div>
+                </span>
+              </li>
+
+
+  				{% endfor %}
+        </p>
+  				{% endif %}
+  			{% endwith %}
+    </div>
+
+
 		</div>
   </main>
 </div>
