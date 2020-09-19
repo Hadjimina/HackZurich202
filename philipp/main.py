@@ -82,9 +82,6 @@ def upload_image():
 		flash('Allowed image types are -> png, jpg, jpeg, gif')
 		return redirect(request.url)
 
-
-
-
 @app.route('/display/<filename>')
 def display_image(filename):
 	#print('display_image filename: ' + filename)
@@ -92,4 +89,4 @@ def display_image(filename):
 	return redirect(url_for('static', filename='uploads/' + filename), code=301)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(threaded=False)
