@@ -48,4 +48,4 @@ def segment(net, path, show_orig=True, dev='cpu'):
   plt.imshow(rgb); plt.axis('off'); plt.show()
 
 dlab = models.segmentation.deeplabv3_resnet101(pretrained=1).eval()
-segment(dlab, os.path.abspath("example.jpg"))
+segment(dlab, os.path.abspath("pictures\\good\\unnamed.png"))
