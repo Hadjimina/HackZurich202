@@ -1,2 +1,14 @@
 sightengine
 requests
+Flask
+imageai
+keras==2.0.2
+keras-models
+matplotlib
+numpy
+pillow
+setuptools
+tensorflow==1.4.0
+torch
+torchvision
+opencv-python
