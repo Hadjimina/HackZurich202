@@ -10,23 +10,13 @@ sys.path.insert(1, 'functions/')
 from SWcheck import SWcheckMain
 from checkFaceTooBig import checkFaceTooBigMain
 from checkSightengine import check_sightengine_properties
-from checkBackground import checkBackgroundEdges
+from backgroundMask import checkBackgroundEdges,  evalutateColorDisribution
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
-USE_SIGHTENGINE = False
+USE_SIGHTENGINE = True
 SHOW_POSITIVE_MESSAGES = False
 SKIP_OTHER = True
 
-def checkResolution(path):
-	im = Image.open(path)
-	width, height = im.size
-	if width < 300 or height < 300:
-		messages.append(tuple(("Image is too small. Try uploading a bigger picture", "error")))
-		error_count+=1
-
-	else:
-		if SHOW_POSITIVE_MESSAGES:
-			messages.append(tuple(("Image Resolution good","information")))
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -160,7 +150,14 @@ def upload_image():
 
 
 		#Check resolution
-		checkResolution(path)
+		im = Image.open(path)
+		width, height = im.size
+		if width < 300 or height < 300:
+			messages.append(tuple(("Image is too small. Try uploading a bigger picture", "error")))
+			error_count+=1
+		else:
+			if SHOW_POSITIVE_MESSAGES:
+				messages.append(tuple(("Image Resolution good","information")))
 
 
 		edgesReturn = checkBackgroundEdges(path)
@@ -173,6 +170,14 @@ def upload_image():
 			warning_count += 1
 
 
+		colorsReturn = evalutateColorDisribution(path)
+		print("COLORS RETURN: "+str(colorsReturn))
+		if colorsReturn == 0:
+			if SHOW_POSITIVE_MESSAGES:
+				messages.append(tuple(("Background not too wild","information")))
+		else:
+			messages.append(tuple(("Wow that's colorful. Maybe use slightly less colors.","warning")))
+			warning_count += 1
 
 		if error_count == 0:
 			if warning_count > 0:

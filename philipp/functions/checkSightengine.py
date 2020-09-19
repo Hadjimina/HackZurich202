@@ -14,7 +14,8 @@ def check_sightengine_properties(path):
     - Sunglasses detection
     """
 
-    client = SightengineClient('1519637001','knEJCk3vyKorBydqMPek')
+    #client = SightengineClient('1519637001','knEJCk3vyKorBydqMPek')
+    client = SightengineClient('250594697','54GphLZgSBoenkVfXMPX')
     output = client.check('nudity','wad','properties','offensive','scam','text-content','face-attributes','text').set_file(os.path.abspath(path))
     
     # Adjust the dictionary to our requirements
@@ -37,7 +38,7 @@ def check_sightengine_properties(path):
 
     # 0 = OK, 1 = High, 2 = Low
     output['contrast'] = 1 if output['contrast'] > 0.85 else 2 if output['contrast'] < 0.15 else 0
-    output['brightness'] = 1 if output['brightness'] > 0.85 else 2 if output['brightness'] < 0.2 else 0
+    output['brightness'] = 1 if output['brightness'] > 0.85 else 2 if output['brightness'] < 0.15 else 0
     del output['faces']
     
     return output
