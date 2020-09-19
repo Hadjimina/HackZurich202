@@ -84,21 +84,27 @@ def evalutateColorDisribution(imagePath):
 
     global FOREGROUND_IMAGE
     maskImage = FOREGROUND_IMAGE
-    image_slic = seg.slic(maskImage,n_segments=200) #k-means clustering
-    kMImage = color.label2rgb(image_slic, maskImage, kind='avg')
+    # image_slic = seg.slic(maskImage,n_segments=300) #k-means clustering
+    # kMImage = color.label2rgb(image_slic, maskImage, kind='avg')
+    kMImage = maskImage
+    # plt.imshow(kMImage)
     colorDistributionDict = {}
     for i in range(len(kMImage)):
         for k in range(len(kMImage[i])):
             npRGB = kMImage[i][k]
-            hexKey = "#{:2x}{:2x}{:2x}".format(int(npRGB[0]/10),int(npRGB[1]/10),int(npRGB[2]/10))
+            hexKey = "#{:2x}{:2x}{:2x}".format(int(npRGB[0]/20),int(npRGB[1]/20),int(npRGB[2]/20))
             if hexKey == "# 0 0 0": #masked person
                 continue
             if hexKey in colorDistributionDict.keys():
                 colorDistributionDict[hexKey] += 1
             else:
                 colorDistributionDict[hexKey] = 1
-    # print(len(list(colorDistributionDict.keys())))
-    if len(list(colorDistributionDict.keys())) > 60:
+    # colorDistributionDict = {k: v for k, v in sorted(colorDistributionDict.items(), key=lambda item: item[1])}
+    
+    finals = [v for v in colorDistributionDict.values() if v > (0.004 * len(kMImage)*len(kMImage[0]))] 
+    print(len(finals))
+    print(len(list(colorDistributionDict.keys())))
+    if len(finals) > 18:
         return 1
     return 0
 
@@ -120,8 +126,8 @@ def checkBackgroundEdges(path):
 
 if __name__ == "__main__":
     start  = timer()
-    print("jason",checkBackgroundEdges("pictures\\bad\\b9.jpg"))
-    print("mike",evalutateColorDisribution("pictures\\bad\\b9.jpg"))
+    print("jason",checkBackgroundEdges("..\\pictures\\bad\\454132.jpg"))
+    print("mike",evalutateColorDisribution(""))
     end = timer()
     print("Time in seconds: {}".format(end - start)) 
     plt.show()
