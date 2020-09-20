@@ -66,7 +66,7 @@ def upload_image():
 			if SHOW_POSITIVE_MESSAGES:
 				messages.append(tuple(("Face is good size","information")))
 
-		if ret[0] >3:
+		if ret[0] >2:
 			messages.append(tuple(("The image contains "+str(ret[0])+" people. Try having no more than 3","warning")))
 			warning_count+=1
 		else:
@@ -110,16 +110,16 @@ def upload_image():
 					else:
 						if SHOW_POSITIVE_MESSAGES:
 							messages.append(tuple(("brightness ok", "information")))
-				elif key == "contrast":
-					if value==1:
-						messages.append(tuple(("To get the best quality of pictures we suggest decrasing the contrast", "warning")))
-						warning_count+=1
-					elif value==2:
-						messages.append(tuple(("To get the best quality of pictures we suggest increasing the contrast", "warning")))
-						warning_count+=1
-					else:
-						if SHOW_POSITIVE_MESSAGES:
-							messages.append(tuple(("contrast ok", "information")))
+				# elif key == "contrast":
+					# if value==1:
+					# 	messages.append(tuple(("To get the best quality of pictures we suggest decrasing the contrast", "warning")))
+					# 	warning_count+=1
+					# elif value==2:
+					# 	messages.append(tuple(("To get the best quality of pictures we suggest increasing the contrast", "warning")))
+					# 	warning_count+=1
+					# else:
+					# 	if SHOW_POSITIVE_MESSAGES:
+					# messages.append(tuple(("contrast ok", "information")))
 				elif key == "offensive":
 					if value==1:
 						messages.append(tuple(("We detected some offensive imagery in your picture. Please change your image.","error")))
@@ -176,7 +176,7 @@ def upload_image():
 			if SHOW_POSITIVE_MESSAGES:
 				messages.append(tuple(("Background not too wild","information")))
 		else:
-			messages.append(tuple(("Wow that's colorful. Maybe use slightly less colors.","warning")))
+			messages.append(tuple(("Wow this image contains too many different colors. Maybe use fewer.","warning")))
 			warning_count += 1
 
 		if error_count == 0:
